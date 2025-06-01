@@ -1,0 +1,132 @@
+basePath: /
+definitions:
+  model.Order:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      orderStatus:
+        $ref: '#/definitions/model.OrderStatus'
+      productID:
+        type: string
+      quantity:
+        type: integer
+      totalAmount:
+        description: price * quantity
+        type: number
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
+  model.OrderCreateDTO:
+    properties:
+      productID:
+        type: string
+      quantity:
+        type: integer
+      totalAmount:
+        type: number
+      userID:
+        type: integer
+    type: object
+  model.OrderStatus:
+    enum:
+    - ORDER PLACED
+    - SHIPPED
+    - DELIVERED
+    - ORDER CANCELLED
+    type: string
+    x-enum-varnames:
+    - OrderPlaced
+    - Shipped
+    - Delivered
+    - OrderCanceled
+info:
+  contact: {}
+  description: This is a Simple application for Orders
+  title: Order Service API
+  version: "1.0"
+paths:
+  /order:
+    get:
+      consumes:
+      - application/json
+      description: Get an array of Orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Order'
+            type: array
+      summary: Get All Orders
+      tags:
+      - Order
+  /order/:
+    post:
+      consumes:
+      - application/json
+      description: Create an Order
+      parameters:
+      - description: Order details
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderCreateDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Order'
+      summary: Create Order
+      tags:
+      - Order
+  /order/{orderid}:
+    get:
+      consumes:
+      - application/json
+      description: Get a Order
+      parameters:
+      - description: order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Order'
+      summary: Get Order by OrderID
+      tags:
+      - Order
+    patch:
+      consumes:
+      - application/json
+      description: update order status
+      parameters:
+      - description: order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Update Order status by orderid
+      tags:
+      - Order
+swagger: "2.0"
