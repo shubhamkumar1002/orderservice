@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/kataras/iris/v12"
-	"github.com/swaggo/http-swagger"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"orderService/config"
 	"orderService/controller"
 	_ "orderService/docs"
@@ -35,8 +35,8 @@ func main() {
 	})
 	app.Post("/order", orderHandler.CreateOrder)
 	app.Get("/orders", orderHandler.GetOrders)
-	app.Get("/order/:id", orderHandler.GetOrderByID)
-	app.Patch("/order/:id", orderHandler.UpdateOrderStatus)
+	app.Get("/order/{id}", orderHandler.GetOrderByID)
+	app.Patch("/order/{id}", orderHandler.UpdateOrderStatus)
 
 	app.Listen(":8080")
 }

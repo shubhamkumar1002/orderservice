@@ -44,9 +44,9 @@ func (oc *OrderController) CreateOrder(ctx iris.Context) {
 // @Tags Order
 // @Accept json
 // @Produce json
-// @Param id path int true "order ID"
+// @Param id path string true "order ID"
 // @Success 200 {object} model.Order
-// @Router /order/{orderid} [get]
+// @Router /order/{id}  [get]
 func (oc *OrderController) GetOrderByID(ctx iris.Context) {
 	idParam := ctx.Params().Get("id")
 	id, err := uuid.Parse(idParam)
@@ -72,7 +72,7 @@ func (oc *OrderController) GetOrderByID(ctx iris.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {array} model.Order
-// @Router /order [get]
+// @Router /orders [get]
 func (oc *OrderController) GetOrders(ctx iris.Context) {
 	result, err := oc.Service.GetOrders()
 	if err != nil {
@@ -94,10 +94,12 @@ func (oc *OrderController) GetOrders(ctx iris.Context) {
 // @Tags Order
 // @Accept json
 // @Produce json
-// @Param id path int true "order ID"
+// @Param id path string true "order ID"
+// @Param order body model.OrderUpdateDTO true "Order update details"
 // @Success 200 {object} string
-// @Router /order/{orderid} [patch]
+// @Router /order/{id} [patch]
 func (oc *OrderController) UpdateOrderStatus(ctx iris.Context) {
+	var orderupdate model.OrderUpdateDTO
 	idParam := ctx.Params().Get("id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
@@ -106,17 +108,13 @@ func (oc *OrderController) UpdateOrderStatus(ctx iris.Context) {
 		return
 	}
 
-	var body struct {
-		OrderStatus   string `json:"order_status"`
-		PaymentStatus string `json:"payment_status"`
-	}
-	if err := ctx.ReadJSON(&body); err != nil || (body.OrderStatus == "" && body.PaymentStatus == "") {
+	if err := ctx.ReadJSON(&orderupdate); err != nil || (orderupdate.OrderStatus == "" && orderupdate.PaymentStatus == "") {
 		ctx.StatusCode(iris.StatusBadRequest)
 		ctx.JSON(iris.Map{"error": "Invalid status"})
 		return
 	}
 
-	if _, err := oc.Service.UpdateOrderStatus(id, body.OrderStatus, body.PaymentStatus); err != nil {
+	if _, err := oc.Service.UpdateOrderStatus(id, orderupdate.OrderStatus, orderupdate.PaymentStatus); err != nil {
 		ctx.StatusCode(iris.StatusInternalServerError)
 		ctx.JSON(iris.Map{"error": "Failed to update status"})
 		return

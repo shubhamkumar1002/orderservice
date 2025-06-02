@@ -36,3 +36,8 @@ type OrderCreateDTO struct {
 	Quantity    int     `gorm:"not null;default:1"`
 	TotalAmount float64 `gorm:"not null"`
 }
+
+type OrderUpdateDTO struct {
+	OrderStatus   string `json:"order_status"`
+	PaymentStatus string `json:"payment_status"`
+}

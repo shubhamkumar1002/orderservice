@@ -15,32 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/order": {
-            "get": {
-                "description": "Get an array of Orders",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Order"
-                ],
-                "summary": "Get All Orders",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.Order"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/order/": {
             "post": {
                 "description": "Create an Order",
@@ -75,7 +49,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/order/{orderid}": {
+        "/order/{id}": {
             "get": {
                 "description": "Get a Order",
                 "consumes": [
@@ -90,7 +64,7 @@ const docTemplate = `{
                 "summary": "Get Order by OrderID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "order ID",
                         "name": "id",
                         "in": "path",
@@ -120,11 +94,20 @@ const docTemplate = `{
                 "summary": "Update Order status by orderid",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "order ID",
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Order update details",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.OrderUpdateDTO"
+                        }
                     }
                 ],
                 "responses": {
@@ -132,6 +115,32 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "description": "Get an array of Orders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get All Orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Order"
+                            }
                         }
                     }
                 }
@@ -200,6 +209,17 @@ const docTemplate = `{
                 "Delivered",
                 "OrderCanceled"
             ]
+        },
+        "model.OrderUpdateDTO": {
+            "type": "object",
+            "properties": {
+                "order_status": {
+                    "type": "string"
+                },
+                "payment_status": {
+                    "type": "string"
+                }
+            }
         }
     }
 }`
